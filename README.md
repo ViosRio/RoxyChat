@@ -2,7 +2,7 @@
 # RoxyMask  
 ### Telegram Anonymous Chat Bot  
 
-![RoxyMask Logo](https://i.hizliresim.com/4d6dddz.png)  
+![Logo](https://github.com/ViosRio/RoxyMask/blob/main/assets/logo.png?raw=true)
 
 ## Özellikler  
 - Anonim sohbet  
