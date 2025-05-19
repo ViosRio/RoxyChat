@@ -1,4 +1,3 @@
-#
 #-----------CREDITS -----------
 # telegram : @legend_coder
 # github : noob-mukesh
@@ -15,7 +14,14 @@ import asyncio
 from random import choice
 from datetime import datetime
 import logging
-from config import *
+
+# 1. ÖNCE CLIENT TANIMI (TÜM HANDLERLARDAN ÖNCE GELMELİ)
+Roxy = Client(
+    "roxy-mask",
+    api_id=API_ID,
+    api_hash=API_HASH,
+    bot_token=BOT_TOKEN
+)
 
 # Log ayarları
 logging.basicConfig(
@@ -33,6 +39,19 @@ LIST_DIR.mkdir(parents=True, exist_ok=True)
 active_chats = {}
 waiting_users = {}
 private_mode = {}
+
+# ... (Diğer tüm fonksiyonlar aynı şekilde kalacak) ...
+
+# Botu Başlat
+if __name__ == "__main__":
+    print(f"🔥 {BOT_NAME} çalışıyor...")
+    try:
+        Roxy.start()
+        idle()
+    except Exception as e:
+        logger.error(f"Bot error: {e}")
+    finally:
+        Roxy.stop()
 
 # Başlangıç Mesajı
 def get_start_message():
@@ -269,5 +288,12 @@ async def toggle_private(client, message):
 
 # Botu Başlat
 if __name__ == "__main__":
-    Roxy.start()
-    idle()
+    print(f"🔥 {BOT_NAME} çalışıyor...")
+    try:
+        Roxy.start()
+        idle()
+    except Exception as e:
+        logger.error(f"Bot error: {e}")
+    finally:
+        Roxy.stop()
+
