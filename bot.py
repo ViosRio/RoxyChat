@@ -6,6 +6,8 @@
 
 import os
 import json
+from pyrogram import Client, filters
+from config import *
 from pathlib import Path
 from pyrogram import Client, filters, enums, idle
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, Message
@@ -267,12 +269,5 @@ async def toggle_private(client, message):
 
 # Botu Başlat
 if __name__ == "__main__":
-    print(f"🔥 {BOT_NAME} çalışıyor...")
-    print("* Powered by DeepSeek ❤️‍🔥 *")
-    try:
-        Roxy.start()
-        idle()
-    except Exception as e:
-        logger.error(f"Bot error: {e}")
-    finally:
-        Roxy.stop()
+    Roxy.start()
+    idle()
