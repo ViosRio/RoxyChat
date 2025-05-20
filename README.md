@@ -12,9 +12,17 @@
 
 ## 🚀 Kurulum  
 ```bash
-git clone https://github.com/ViosRio/RoxyTalk.git
-cd RoxyMask
-python bot.py
+$git clone https://github.com/ViosRio/RoxyTalk.git
+
+$ cd RoxyMask
+```
+`DEĞERLER EDİTLEMEK`
+```
+$ vi config.py
+```
+`BOTU BAŞLAT`
+```
+$ bash startup
 ```
 
 
