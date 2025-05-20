@@ -48,20 +48,20 @@ def get_start_message(user):
     return f"""
 ✨ **RoxyMask - Anonim Sohbet Botu** ✨
 
-{emoji} **Gizlilik ve eğlence bir arada!**
+{emoji} **Gizlilik Ve Eğlence Bir Arada!**
 
-▸ **Eşleş** butonuyla rastgele biriyle sohbet et
+▸ **Eşleş** Butonuyla Rastgele Biriyle Sohbet Et
 ▸ **Gizli Mod:** {private_status}
 ▸ **Arkadaş Sayısı:** {len(user_friends.get(user.id, []))}
 
-*Komutlar:*
-/start - Botu başlat
-/private - Gizli modu aç/kapat
-/add - Arkadaş ekle
-/list - Arkadaş listesi
-/settings - Ayarlar
+• Komutlar:
+• /start = Botu başlat
+• /private = Gizli modu aç/kapat
+• /add = Arkadaş ekle
+• /list = Arkadaş listesi
+• /settings = Ayarlar
 
-*Powered by DeepSeek ❤️‍🔥*
+Powered by DeepSeek ❤️‍🔥
 """
 
 # Butonlar
@@ -119,11 +119,11 @@ async def add_friend(client, message):
             user_friends[message.from_user.id] = []
         if friend_id not in user_friends[message.from_user.id]:
             user_friends[message.from_user.id].append(friend_id)
-            await message.reply(f"✅ Arkadaş eklendi: {friend_id}")
+            await message.reply(f"✅ Arkadaş Eklendi: {friend_id}")
         else:
-            await message.reply("⚠️ Bu kullanıcı zaten arkadaş listenizde!")
+            await message.reply("⚠️ Bu kullanıcı Zaten Arkadaş Listenizde!")
     else:
-        await message.reply("Kullanım: /add <kullanıcı_id>")
+        await message.reply("Kullanım: /add CEREN")
 
 @app.on_message(filters.command("list"))
 async def list_friends(client, message):
@@ -131,7 +131,7 @@ async def list_friends(client, message):
     if friends:
         await message.reply(f"👥 Arkadaşlarınız:\n" + "\n".join(friends))
     else:
-        await message.reply("Arkadaş listeniz boş 😢")
+        await message.reply("Arkadaş Listeniz Boş 😢")
 
 # Callback Query Handler
 @app.on_callback_query()
@@ -141,7 +141,7 @@ async def callback_handler(client, query: CallbackQuery):
     
     if data == "find_partner":
         if user.id in active_chats:
-            await query.answer("Zaten bir sohbettesiniz!", show_alert=True)
+            await query.answer("Zaten Bir Sohbettesiniz!", show_alert=True)
             return
         
         # Eşleşme işlemi
@@ -151,11 +151,11 @@ async def callback_handler(client, query: CallbackQuery):
             active_chats[partner_id] = user.id
             del waiting_users[partner_id]
             
-            await client.send_message(partner_id, "✅ Eşleşme bulundu! Artık sohbet edebilirsiniz.")
-            await query.answer("✅ Eşleşme bulundu! Artık sohbet edebilirsiniz.", show_alert=True)
+            await client.send_message(partner_id, "✅ Eşleşme Bulundu! Artık Sohbet Edebilirsiniz.")
+            await query.answer("✅ Eşleşme bulundu! Artık Sohbet Edebilirsiniz.", show_alert=True)
         else:
             waiting_users[user.id] = True
-            await query.answer("🔎 Eşleşme aranıyor... Lütfen bekleyin.", show_alert=True)
+            await query.answer("🔎 Eşleşme Aranıyor... Lütfen Bekleyin.", show_alert=True)
     
     elif data == "settings":
         await query.edit_message_text("⚙️ **Ayarlar**", reply_markup=SETTINGS_BUTTONS)
@@ -170,14 +170,14 @@ async def callback_handler(client, query: CallbackQuery):
         await query.edit_message_text("👥 **Arkadaşlar**", reply_markup=FRIENDS_BUTTONS)
     
     elif data == "add_friend":
-        await query.answer("Arkadaş eklemek için: /add <kullanıcı_id>", show_alert=True)
+        await query.answer("Arkadaş eklemek için: /add CEREN", show_alert=True)
     
     elif data == "list_friends":
         friends = user_friends.get(user.id, [])
         if friends:
             await query.edit_message_text(f"👥 Arkadaşlarınız:\n" + "\n".join(friends))
         else:
-            await query.answer("Arkadaş listeniz boş 😢", show_alert=True)
+            await query.answer("Arkadaş Listeniz Boş 😢", show_alert=True)
     
     elif data == "back_to_main":
         await query.edit_message_text(get_start_message(user), reply_markup=MAIN_BUTTONS)
@@ -199,7 +199,7 @@ async def forward_msg(client, message):
             else:
                 await client.send_message(partner_id, f"@{message.from_user.username}: {message.text}")
         except Exception as e:
-            logger.error(f"Mesaj iletme hatası: {e}")
+            logger.error(f"Mesaj İletme Hatası: {e}")
 
 # Botu Başlat
 if __name__ == "__main__":
