@@ -12,7 +12,7 @@
 
 ## 🚀 Kurulum  
 ```bash
-$git clone https://github.com/ViosRio/RoxyTalk.git
+$git clone https://github.com/ViosRio/Roxychat.git
 
 $ cd RoxyMask
 ```
