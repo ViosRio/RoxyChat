@@ -6,7 +6,7 @@
 ## 🔥 Özellikler  
 - **Anonim Sohbet** - Kimliğini gizle, özgürce konuş!  
 - **Uçtan Uca Şifreleme** - Güvenli mesajlaşma  
-- **Konum Bazlı Eşleşme** - Yakındaki kullanıcılarla bağlan  
+- **Konum Bazlı Eşleşme** - Yakındaki kullanıcılarla bağlan  [ YAKINDA ]
 - **Arkadaş Sistemi** - Arkadaş ekle ve mesajlaş  
 - **Gizli Mod** - `/private` komutuyla kimliğini sakla  
 
