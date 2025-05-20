@@ -20,7 +20,7 @@ python bot.py
 
 
 
-GitHub:
+
 [![Telegram Channel](https://img.shields.io/badge/Join_Our_Channel-ViosTeam-blue?style=for-the-badge&logo=telegram)](https://t.me/ViosTeam)
 
 Can't stop Loving ❤️‍🔥 Let me know if you want any other modifications.
