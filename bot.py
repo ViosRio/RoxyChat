@@ -40,13 +40,16 @@ active_chats = {}
 waiting_users = {}
 private_mode = {}
 user_friends = {}  # Arkadaş listesi için
+total_users = 0    # Toplam kullanıcı sayısı
 
 # Başlangıç Mesajı
 def get_start_message(user):
+    global total_users
     emoji = choice(["🔥", "❤️", "🌹", "🎯"])
     private_status = "✅ AÇIK" if private_mode.get(user.id, False) else "❌ KAPALI"
     return f"""
 ✨ **RoxyMask - Anonim Sohbet Botu** ✨
+👥 **Toplam Kullanıcılar:** {total_users}
 
 {emoji} **Gizlilik Ve Eğlence Bir Arada!**
 
@@ -54,14 +57,7 @@ def get_start_message(user):
 ▸ **Gizli Mod:** {private_status}
 ▸ **Arkadaş Sayısı:** {len(user_friends.get(user.id, []))}
 
-• Komutlar:
-• /start = Botu başlat
-• /private = Gizli modu aç/kapat
-• /add = Arkadaş ekle
-• /list = Arkadaş listesi
-• /settings = Ayarlar
-
-Powered by DeepSeek ❤️‍🔥
+ Powered by DeepSeek ❤️‍🔥
 """
 
 # Butonlar
@@ -74,7 +70,8 @@ MAIN_BUTTONS = InlineKeyboardMarkup([
     [
         InlineKeyboardButton("👥 Arkadaşlar", callback_data="friends"),
         InlineKeyboardButton("👤 Kurucu", url=f"https://t.me/{OWNER_USERNAME}")
-    ]
+    ],
+    [InlineKeyboardButton("❌ Sohbeti Bitir", callback_data="end_chat")]
 ])
 
 SETTINGS_BUTTONS = InlineKeyboardMarkup([
@@ -85,15 +82,26 @@ SETTINGS_BUTTONS = InlineKeyboardMarkup([
 FRIENDS_BUTTONS = InlineKeyboardMarkup([
     [InlineKeyboardButton("➕ Arkadaş Ekle", callback_data="add_friend")],
     [InlineKeyboardButton("📋 Arkadaş Listesi", callback_data="list_friends")],
+    [InlineKeyboardButton("📨 Arkadaşa Mesaj Gönder", callback_data="message_friend")],
+    [InlineKeyboardButton("🔙 Geri", callback_data="back_to_main")]
+])
+
+HELP_BUTTONS = InlineKeyboardMarkup([
+    [
+        InlineKeyboardButton("🔍 Komutlar", callback_data="commands"),
+        InlineKeyboardButton("💡 Nasıl Kullanılır?", callback_data="how_to_use")
+    ],
     [InlineKeyboardButton("🔙 Geri", callback_data="back_to_main")]
 ])
 
 # Handler'lar
 @app.on_message(filters.command("start"))
 async def start(client, message):
+    global total_users
     user = message.from_user
     if user.id not in user_friends:
         user_friends[user.id] = []
+        total_users += 1
     await message.reply_photo(
         photo=START_IMG,
         caption=get_start_message(user),
@@ -119,11 +127,11 @@ async def add_friend(client, message):
             user_friends[message.from_user.id] = []
         if friend_id not in user_friends[message.from_user.id]:
             user_friends[message.from_user.id].append(friend_id)
-            await message.reply(f"✅ Arkadaş Eklendi: {friend_id}")
+            await message.reply(f"✅ Arkadaş eklendi: {friend_id}")
         else:
-            await message.reply("⚠️ Bu kullanıcı Zaten Arkadaş Listenizde!")
+            await message.reply("⚠️ Bu kullanıcı zaten arkadaş listenizde!")
     else:
-        await message.reply("Kullanım: /add CEREN")
+        await message.reply("Kullanım: /add <kullanıcı_id>")
 
 @app.on_message(filters.command("list"))
 async def list_friends(client, message):
@@ -131,7 +139,7 @@ async def list_friends(client, message):
     if friends:
         await message.reply(f"👥 Arkadaşlarınız:\n" + "\n".join(friends))
     else:
-        await message.reply("Arkadaş Listeniz Boş 😢")
+        await message.reply("Arkadaş listeniz boş 😢")
 
 # Callback Query Handler
 @app.on_callback_query()
@@ -141,7 +149,7 @@ async def callback_handler(client, query: CallbackQuery):
     
     if data == "find_partner":
         if user.id in active_chats:
-            await query.answer("Zaten Bir Sohbettesiniz!", show_alert=True)
+            await query.answer("Zaten bir sohbettesiniz!", show_alert=True)
             return
         
         # Eşleşme işlemi
@@ -151,11 +159,23 @@ async def callback_handler(client, query: CallbackQuery):
             active_chats[partner_id] = user.id
             del waiting_users[partner_id]
             
-            await client.send_message(partner_id, "✅ Eşleşme Bulundu! Artık Sohbet Edebilirsiniz.")
-            await query.answer("✅ Eşleşme bulundu! Artık Sohbet Edebilirsiniz.", show_alert=True)
+            await client.send_message(partner_id, "✅ Eşleşme bulundu! Artık sohbet edebilirsiniz.", reply_markup=MAIN_BUTTONS)
+            await query.answer("✅ Eşleşme bulundu! Artık sohbet edebilirsiniz.", show_alert=True)
+            await query.edit_message_reply_markup(reply_markup=MAIN_BUTTONS)
         else:
             waiting_users[user.id] = True
-            await query.answer("🔎 Eşleşme Aranıyor... Lütfen Bekleyin.", show_alert=True)
+            await query.answer("🔎 Eşleşme aranıyor... Lütfen bekleyin.", show_alert=True)
+    
+    elif data == "end_chat":
+        if user.id in active_chats:
+            partner_id = active_chats[user.id]
+            await client.send_message(partner_id, "❌ Sohbet sonlandırıldı!", reply_markup=MAIN_BUTTONS)
+            del active_chats[partner_id]
+            del active_chats[user.id]
+            await query.answer("Sohbet sonlandırıldı!", show_alert=True)
+            await query.edit_message_reply_markup(reply_markup=MAIN_BUTTONS)
+        else:
+            await query.answer("Aktif bir sohbetiniz yok!", show_alert=True)
     
     elif data == "settings":
         await query.edit_message_text("⚙️ **Ayarlar**", reply_markup=SETTINGS_BUTTONS)
@@ -177,13 +197,40 @@ async def callback_handler(client, query: CallbackQuery):
         if friends:
             await query.edit_message_text(f"👥 Arkadaşlarınız:\n" + "\n".join(friends))
         else:
-            await query.answer("Arkadaş Listeniz Boş 😢", show_alert=True)
+            await query.answer("Arkadaş listeniz boş 😢", show_alert=True)
+    
+    elif data == "message_friend":
+        friends = user_friends.get(user.id, [])
+        if friends:
+            buttons = []
+            for friend in friends:
+                buttons.append([InlineKeyboardButton(f"📨 {friend}", callback_data=f"msg_{friend}")])
+            buttons.append([InlineKeyboardButton("🔙 Geri", callback_data="friends")])
+            await query.edit_message_text(
+                "👥 Arkadaşını seç ve mesaj gönder:",
+                reply_markup=InlineKeyboardMarkup(buttons)
+            )
+        else:
+            await query.answer("Arkadaş listeniz boş 😢", show_alert=True)
+    
+    elif data.startswith("msg_"):
+        friend_id = data[4:]
+        await query.answer(f"Arkadaşınıza mesaj göndermek için: /msg {friend_id} <mesaj>", show_alert=True)
+    
+    elif data == "help":
+        await query.edit_message_text(
+            "📚 **Yardım Menüsü**\n\n"
+            "• /start = Botu başlat\n"
+            "• /private = Gizli modu aç/kapat\n"
+            "• /add CEREN = Arkadaş ekle\n"
+            "• /list = Arkadaş listesi\n"
+            "• /settings = Ayarlar\n\n"
+            "🌟 **Eşleş** butonuyla rastgele biriyle sohbet et!",
+            reply_markup=HELP_BUTTONS
+        )
     
     elif data == "back_to_main":
         await query.edit_message_text(get_start_message(user), reply_markup=MAIN_BUTTONS)
-    
-    elif data == "help":
-        await query.answer(get_start_message(user), show_alert=True)
 
 def is_not_command(_, __, m: Message):
     return not m.text.startswith('/')
@@ -199,7 +246,7 @@ async def forward_msg(client, message):
             else:
                 await client.send_message(partner_id, f"@{message.from_user.username}: {message.text}")
         except Exception as e:
-            logger.error(f"Mesaj İletme Hatası: {e}")
+            logger.error(f"Mesaj iletme hatası: {e}")
 
 # Botu Başlat
 if __name__ == "__main__":
