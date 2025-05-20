@@ -73,7 +73,10 @@ async def start(client, message):
         reply_markup=MAIN_BUTTONS
     )
 
-@app.on_message(filters.text & ~filters.command(commands=None))
+# Diğer importlar ve ayarlar aynı...
+
+# Mesaj forward işlemi için doğru filtre
+@app.on_message(filters.text & ~filters.command(commands=[]))
 async def forward_msg(client, message):
     user_id = message.from_user.id
     if user_id in active_chats:
@@ -85,8 +88,8 @@ async def forward_msg(client, message):
                 await client.send_message(partner_id, f"@{message.from_user.username}: {message.text}")
         except Exception as e:
             logger.error(f"Mesaj iletme hatası: {e}")
-            
-# Botu Başlat
+
+# Botu başlat
 if __name__ == "__main__":
     print("✨ Bot başlatılıyor...")
     try:
