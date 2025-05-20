@@ -73,7 +73,7 @@ async def start(client, message):
         reply_markup=MAIN_BUTTONS
     )
 
-@app.on_message(filters.text & ~filters.command())
+@app.on_message(filters.text & ~filters.command(commands=None))
 async def forward_msg(client, message):
     user_id = message.from_user.id
     if user_id in active_chats:
